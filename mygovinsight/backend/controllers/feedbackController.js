@@ -5,6 +5,21 @@ const Feedback = require('../models/Feedback');
 
 exports.createFeedback = async(req, res) => {
     try{
+        const { sector, institution, rating, description, attach } = req.body;
+
+        if (!sector || !institution || !rating || !description) {
+            return res.status(400).json({
+                success: false,
+                message: 'Validation error: sector, institution, rating, and description are required.'
+            });
+        }
+
+        if (typeof rating !== 'number' || rating < 1 || rating > 5) {
+            return res.status(400).json({
+                success: false,
+                message: 'Validation error: rating must be a number between 1 and 5.'
+            });
+        }
         const feedback = new Feedback ({
             user: req.user.id,
             sector: req.body.sector,
